@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海洋程式冒險家 | Web Portfolio</title>
+    <!-- Google Fonts: Inter & Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep-ocean: #031327;
+            --bg-mid-ocean: #0A3C59;
+            --primary-cyan: #05BFDB;
+            --primary-teal: #088395;
+            --accent-glow: #00F5FF;
+            --text-light: #E0F7FA;
+            --text-dim: #90A4AE;
+            --glass-bg: rgba(10, 38, 64, 0.45);
+            --glass-border: rgba(5, 191, 219, 0.25);
+            --locked-bg: rgba(15, 23, 42, 0.6);
+            --locked-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-deep-ocean) 0%, #06283D 50%, #083344 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        /* 背景水泡動畫容器 */
+        .ocean-bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(5, 191, 219, 0.2));
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(5, 191, 219, 0.4);
+            animation: rise 12s infinite linear;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(0.8) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.7;
+            }
+            80% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 水下微光 */
+        .sun-ray {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 500px;
+            background: radial-gradient(ellipse at top, rgba(5, 191, 219, 0.15) 0%, rgba(3, 19, 39, 0) 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 主要內容外層 */
+        .main-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 中央個人資訊區 */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-cyan);
+            box-shadow: 0 0 25px rgba(5, 191, 219, 0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .avatar-wrapper:hover .avatar-img {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 0 35px rgba(0, 245, 255, 0.8);
+        }
+
+        /* 頭像外圍藍光光暈圈 */
+        .avatar-glow {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-cyan), transparent, var(--accent-glow));
+            z-index: -1;
+            animation: spin 6s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #FFFFFF 30%, var(--primary-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-subtitle {
+            font-size: 1rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            background: rgba(5, 191, 219, 0.1);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(5, 191, 219, 0.2);
+            display: inline-block;
+        }
+
+        /* 冒險進度條 */
+        .progress-bar-container {
+            width: 100%;
+            max-width: 320px;
+            margin-top: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 8px;
+            width: 12.5%; /* 2/16 = 12.5% */
+            background: linear-gradient(90deg, var(--primary-teal), var(--accent-glow));
+            border-radius: 8px;
+            box-shadow: 0 0 10px var(--primary-cyan);
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 6px;
+        }
+
+        /* 16 個關卡網格 Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* 響應式斷點處理 */
+        @media (max-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .profile-title {
+                font-size: 1.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 通用卡片 Glassmorphism 樣式 */
+        .quest-card {
+            position: relative;
+            height: 130px;
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            overflow: hidden;
+        }
+
+        /* --- 已解鎖卡片樣式 --- */
+        .quest-card.unlocked {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+        }
+
+        .quest-card.unlocked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .quest-card.unlocked:hover::before {
+            left: 100%;
+        }
+
+        .quest-card.unlocked:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 12px 30px rgba(5, 191, 219, 0.35), inset 0 0 15px rgba(5, 191, 219, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .level-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .unlocked .level-badge {
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-cyan));
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(5, 191, 219, 0.4);
+        }
+
+        .card-status-icon {
+            font-size: 1.2rem;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .unlocked .card-title {
+            color: var(--text-light);
+        }
+
+        .quest-card.unlocked:hover .card-title {
+            color: #FFFFFF;
+            text-shadow: 0 0 8px rgba(5, 191, 219, 0.6);
+        }
+
+        .card-footer {
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .unlocked .card-footer {
+            color: var(--primary-cyan);
+        }
+
+        /* --- 未解鎖卡片樣式 --- */
+        .quest-card.locked {
+            background: var(--locked-bg);
+            border: 1px solid var(--locked-border);
+            cursor: not-allowed;
+            opacity: 0.65;
+            filter: grayscale(40%);
+        }
+
+        .locked .level-badge {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-dim);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .locked .card-title {
+            color: var(--text-dim);
+        }
+
+        .locked .card-footer {
+            color: #64748B;
+        }
+
+        /* 點擊鎖定卡片時的顫抖動畫 */
+        .quest-card.shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            border-color: rgba(239, 68, 68, 0.5) !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3) !important;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        /* 鎖定提示 Toast */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--primary-cyan);
+            color: var(--text-light);
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast-message.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 底層裝飾性海洋波浪 */
+        .ocean-footer-wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景動態元素 -->
+    <div class="sun-ray"></div>
+    <div class="ocean-bubbles" id="bubbleContainer"></div>
+
+    <!-- 主要內容區塊 -->
+    <div class="main-container">
+
+        <!-- 中央個人資訊區 -->
+        <header class="profile-section">
+            <div class="avatar-wrapper">
+                <div class="avatar-glow"></div>
+                <!-- 大頭貼預設假圖 (使用 Unsplash 質感海洋/人物照) -->
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Avatar" class="avatar-img" onerror="this.src='https://placehold.co/150x150/0A3C59/05BFDB?text=Ocean+Explorer'">
+            </div>
+            
+            <h1 class="profile-title">海洋程式冒險家</h1>
+            <div class="profile-subtitle">Web Development Journey</div>
+
+            <!-- 闖關進度 -->
+            <div class="progress-bar-container">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">已解鎖關卡：2 / 16 (12.5%)</div>
+        </header>
+
+        <!-- 16 個關卡入口網格 -->
+        <main class="grid-container">
+
+            <!-- 關卡 1：已解鎖 -->
+            <a href="w1/index.html" class="quest-card unlocked">
+                <div class="card-header">
+                    <span class="level-badge">LV.01</span>
+                    <span class="card-status-icon">🌊</span>
+                </div>
+                <div class="card-title">Week 1 - 數位名片</div>
+                <div class="card-footer">
+                    <span>挑戰成功</span>
+                    <span>→</span>
+                </div>
+            </a>
+
+            <!-- 關卡 2：已解鎖 -->
+            <a href="w2/index.html" class="quest-card unlocked">
+                <div class="card-header">
+                    <span class="level-badge">LV.02</span>
+                    <span class="card-status-icon">🍔</span>
+                </div>
+                <div class="card-title">Week 2 - 今天吃甚麼?</div>
+                <div class="card-footer">
+                    <span>挑戰成功</span>
+                    <span>→</span>
+                </div>
+            </a>
+
+            <!-- 關卡 3 到 16：未解鎖狀態 (帶有鎖頭及反饋動畫) -->
+            <!-- LV.03 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 3)">
+                <div class="card-header">
+                    <span class="level-badge">LV.03</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 3 - 探索深海...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.04 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 4)">
+                <div class="card-header">
+                    <span class="level-badge">LV.04</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 4 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.05 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 5)">
+                <div class="card-header">
+                    <span class="level-badge">LV.05</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 5 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.06 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 6)">
+                <div class="card-header">
+                    <span class="level-badge">LV.06</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 6 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.07 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 7)">
+                <div class="card-header">
+                    <span class="level-badge">LV.07</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 7 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.08 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 8)">
+                <div class="card-header">
+                    <span class="level-badge">LV.08</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 8 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.09 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 9)">
+                <div class="card-header">
+                    <span class="level-badge">LV.09</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 9 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.10 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 10)">
+                <div class="card-header">
+                    <span class="level-badge">LV.10</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 10 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.11 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 11)">
+                <div class="card-header">
+                    <span class="level-badge">LV.11</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 11 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.12 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 12)">
+                <div class="card-header">
+                    <span class="level-badge">LV.12</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 12 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.13 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 13)">
+                <div class="card-header">
+                    <span class="level-badge">LV.13</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 13 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.14 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 14)">
+                <div class="card-header">
+                    <span class="level-badge">LV.14</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 14 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.15 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 15)">
+                <div class="card-header">
+                    <span class="level-badge">LV.15</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 15 - 尚未解鎖...</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+            <!-- LV.16 -->
+            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 16)">
+                <div class="card-header">
+                    <span class="level-badge">LV.16</span>
+                    <span class="card-status-icon">🔒</span>
+                </div>
+                <div class="card-title">Week 16 - 最終大魔王</div>
+                <div class="card-footer">
+                    <span>尚未解鎖</span>
+                </div>
+            </a>
+
+        </main>
+
+        <footer>
+            <p>© 2026 海洋程式作品集 | Web Design & Development Course</p>
+        </footer>
+    </div>
+
+    <!-- 鎖定提示 Pop-up -->
+    <div class="toast-message" id="toast">
+        <span>🔒</span>
+        <span id="toastText">關卡尚未開放，請先完成前置任務！</span>
+    </div>
+
+    <script>
+        // 1. 動態產生背景水泡效果
+        function createBubbles() {
+            const container = document.getElementById('bubbleContainer');
+            const bubbleCount = 20;
+
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // 隨機尺寸與位置
+                const size = Math.random() * 25 + 8; // 8px ~ 33px
+                const left = Math.random() * 100; // 0% ~ 100%
+                const duration = Math.random() * 8 + 6; // 6s ~ 14s
+                const delay = Math.random() * 10; // 0s ~ 10s
+
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${left}%`;
+                bubble.style.animationDuration = `${duration}s`;
+                bubble.style.animationDelay = `${delay}s`;
+
+                container.appendChild(bubble);
+            }
+        }
+
+        // 2. 點擊未解鎖卡片時的反饋動畫與提示訊息
+        let toastTimeout;
+        function triggerLockedEffect(element, level) {
+            // 新增 Shake 效果類別
+            element.classList.remove('shake');
+            // 強制重繪 (reflow) 以利再次觸發 CSS 動畫
+            void element.offsetWidth;
+            element.classList.add('shake');
+
+            // 顯示 Toast 訊息
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            toastText.textContent = `Week ${level} 關卡尚未開放，敬請期待！`;
+            
+            toast.classList.add('show');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 頁面載入後初始化
+        window.onload = function() {
+            createBubbles();
+        };
+    </script>
+</body>
+</html>
