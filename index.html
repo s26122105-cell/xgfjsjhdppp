@@ -186,7 +186,7 @@
 
         .progress-fill {
             height: 8px;
-            width: 12.5%; /* 2/16 = 12.5% */
+            width: 25%; /* 4/16 = 25% */
             background: linear-gradient(90deg, var(--primary-teal), var(--accent-glow));
             border-radius: 8px;
             box-shadow: 0 0 10px var(--primary-cyan);
@@ -434,7 +434,7 @@
             <div class="progress-bar-container">
                 <div class="progress-fill"></div>
             </div>
-            <div class="progress-text">已解鎖關卡：2 / 16 (12.5%)</div>
+            <div class="progress-text">已解鎖關卡：4 / 16 (25.0%)</div>
         </header>
 
         <!-- 16 個關卡入口網格 -->
@@ -466,28 +466,29 @@
                 </div>
             </a>
 
-            <!-- 關卡 3 到 16：未解鎖狀態 (帶有鎖頭及反饋動畫) -->
-            <!-- LV.03 -->
-            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 3)">
+            <!-- 關卡 3：已解鎖 -->
+            <a href="w3/index.html" class="quest-card unlocked">
                 <div class="card-header">
                     <span class="level-badge">LV.03</span>
-                    <span class="card-status-icon">🔒</span>
+                    <span class="card-status-icon">🐙</span>
                 </div>
-                <div class="card-title">Week 3 - 探索深海...</div>
+                <div class="card-title">Week 3 - 探索深海</div>
                 <div class="card-footer">
-                    <span>尚未解鎖</span>
+                    <span>挑戰成功</span>
+                    <span>→</span>
                 </div>
             </a>
 
-            <!-- LV.04 -->
-            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 4)">
+            <!-- 關卡 4：已解鎖 -->
+            <a href="w4/index.html" class="quest-card unlocked">
                 <div class="card-header">
                     <span class="level-badge">LV.04</span>
-                    <span class="card-status-icon">🔒</span>
+                    <span class="card-status-icon">🤫</span>
                 </div>
-                <div class="card-title">Week 4 - 尚未解鎖...</div>
+                <div class="card-title">Week 4 - 悄悄話</div>
                 <div class="card-footer">
-                    <span>尚未解鎖</span>
+                    <span>挑戰成功</span>
+                    <span>→</span>
                 </div>
             </a>
 
