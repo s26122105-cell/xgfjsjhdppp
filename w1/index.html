@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人數位名片</title>
+    <!-- 引入 Google Fonts 字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           全域設定與變數 (海洋色系配置)
+           ========================================== */
+        :root {
+            --bg-gradient-start: #e0f2fe;  /* 全局背景漸層 - 淺海藍 */
+            --bg-gradient-end: #bae6fd;    /* 全局背景漸層 - 蔚藍 */
+            --card-bg: #ffffff;           /* 卡片純白背景 */
+            --primary-ocean: #0284c7;     /* 海洋主色 */
+            --primary-hover: #0369a1;     /* 滑鼠懸停深藍色 */
+            --text-main: #0f172a;         /* 深灰字體 */
+            --text-sub: #64748b;          /* 灰藍字體 */
+            --shadow-color: rgba(2, 132, 199, 0.12); /* 海洋藍調微陰影 */
+        }
+
+        /* 基礎重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            padding: 20px;
+        }
+
+        /* ==========================================
+           名片卡片主體
+           ========================================== */
+        .card {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 360px;
+            padding: 40px 30px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 
+                0 10px 25px -5px var(--shadow-color),
+                0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 20px 30px -10px var(--shadow-color),
+                0 12px 15px -8px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ==========================================
+           圓形大頭照
+           ========================================== */
+        .avatar-container {
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #f0f9ff;
+            outline: 2px solid var(--primary-ocean);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+        }
+
+        /* ==========================================
+           個人文字資訊
+           ========================================== */
+        .info {
+            margin-bottom: 28px;
+        }
+
+        .name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .tagline {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* ==========================================
+           按鈕區域
+           ========================================== */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .icon {
+            display: inline-block;
+        }
+
+        /* IG 按鈕：漸層海洋風格 */
+        .btn-instagram {
+            background: linear-gradient(135deg, #0284c7, #06b6d4);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+        }
+
+        .btn-instagram:hover {
+            background: linear-gradient(135deg, #0369a1, #0891b2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(6, 182, 212, 0.35);
+        }
+
+        /* Email 按鈕：極簡淺海洋藍風格 */
+        .btn-email {
+            background-color: #f0f9ff;
+            color: var(--primary-ocean);
+            border: 1px solid #bae6fd;
+        }
+
+        .btn-email:hover {
+            background-color: #e0f2fe;
+            color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 名片主體容器 -->
+    <main class="card">
+        <!-- 圓形大頭照區域 -->
+        <div class="avatar-container">
+            <img class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="個人大頭照">
+        </div>
+
+        <!-- 個人資訊區域 -->
+        <div class="info">
+            <h1 class="name">陳大海 Alex</h1>
+            <p class="tagline">探索視覺美學的 UI/UX 設計新手 🌊</p>
+        </div>
+
+        <!-- 連結按鈕區域 -->
+        <div class="button-group">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn btn-instagram">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                Instagram
+            </a>
+            <a href="mailto:your-email@example.com" class="btn btn-email">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Email 我
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>
