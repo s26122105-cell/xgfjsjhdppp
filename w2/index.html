@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什麼？隨機抽籤機</title>
+    <!-- 載入 Google 字型 (圓潤活潑字體) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= 1. 全局與變數設定 ================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary-orange: #FF6B35;
+            --hover-orange: #FF521B;
+            --light-orange: #FFF3E0;
+            --soft-yellow: #FFD166;
+            --bg-gradient-start: #FF9E7D;
+            --bg-gradient-end: #FFD3A5;
+            --text-color: #4A2810;
+        }
+
+        body {
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        /* ================= 2. 卡片與畫面佈局 ================= */
+        .card-container {
+            background-color: #FFFFFF;
+            border-radius: 30px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.25);
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #FFFFFF;
+        }
+
+        /* 可愛角落裝飾圖示 */
+        .decoration-emoji {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.6;
+            user-select: none;
+        }
+        .top-left {
