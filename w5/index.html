@@ -84,7 +84,7 @@
                 <span class="text-ocean-500">|</span>
                 <span>玩家: <strong id="displayName" class="text-ocean-200">---</strong></span>
                 <span id="hostBadge" class="hidden text-xs bg-amber-500 text-black px-2 py-0.5 rounded font-black">👑 房主</span>
-                <button onclick="leaveRoom()" class="text-xs text-rose-300 hover:text-rose-100 underline ml-2 cursor-pointer">離開</button>
+                <button type="button" onclick="leaveRoom()" class="text-xs text-rose-300 hover:text-rose-100 underline ml-2 cursor-pointer">離開</button>
             </div>
         </div>
     </header>
@@ -92,7 +92,7 @@
     <!-- 主要內容區 -->
     <main class="max-w-5xl mx-auto px-4 py-8 flex-grow w-full">
         
-        <!-- 步驟 1: 登入/開房 介面 (極高清晰對比度) -->
+        <!-- 步驟 1: 登入/開房 介面 (高對比度清晰版) -->
         <div id="loginSection" class="max-w-md mx-auto bg-ocean-900 border-2 border-ocean-400 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-ocean-400/30 rounded-full blur-xl pointer-events-none"></div>
             
@@ -105,7 +105,7 @@
                 </div>
                 
                 <div>
-                    <label class="block text-base font-bold text-ocean-100 mb-1.5">房間號碼</label>
+                    <label class="block text-base font-bold text-ocean-100 mb-1.5">房間號碼 (可自訂或隨機)</label>
                     <div class="flex gap-2">
                         <input type="text" id="inputRoom" placeholder="請輸入房號 (例: 888)" class="w-full bg-ocean-800 border-2 border-ocean-400 rounded-lg px-4 py-3 text-white placeholder-ocean-200 font-mono font-bold focus:outline-none focus:bg-ocean-700 focus:border-white focus:ring-2 focus:ring-white transition shadow-inner">
                         <button type="button" onclick="generateRandomRoom()" class="bg-ocean-700 hover:bg-ocean-600 text-white px-4 py-3 rounded-lg text-sm font-bold whitespace-nowrap transition border-2 border-ocean-400 shadow cursor-pointer">
@@ -123,7 +123,7 @@
         <!-- 步驟 2: 遊戲主要畫面 (登入後顯示) -->
         <div id="gameSection" class="hidden space-y-8">
             
-            <!-- 房主快捷管理條 (如果是房主會顯示在頂部) -->
+            <!-- 房主快捷管理條 (解鎖房主後顯示在頂部) -->
             <div id="hostQuickControl" class="hidden bg-amber-950/90 border-2 border-amber-500 rounded-xl p-4 shadow-xl">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center space-x-2">
@@ -131,7 +131,7 @@
                         <span class="font-black text-amber-200">房主快捷控制區</span>
                     </div>
                     <div class="flex gap-2">
-                        <button type="button" onclick="openHostModalDirectly()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-lg text-xs border border-amber-300 cursor-pointer">
+                        <button type="button" onclick="toggleHostModal()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-lg text-xs border border-amber-300 cursor-pointer">
                             ⚙️ 控制台 (出題/重置)
                         </button>
                         <button type="button" onclick="hostReveal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-lg text-xs border border-white shadow cursor-pointer">
@@ -152,7 +152,7 @@
                 </div>
             </div>
 
-            <!-- 玩家作答區 (狀態為 playing 時開放) -->
+            <!-- 玩家作答區 -->
             <div id="answerSection" class="max-w-xl mx-auto bg-ocean-900/90 border-2 border-ocean-500 rounded-xl p-4 flex gap-3 shadow-lg">
                 <input type="text" id="inputAnswer" placeholder="輸入您的心電感應答案..." class="flex-grow bg-ocean-800 border-2 border-ocean-400 rounded-lg px-4 py-2.5 text-white placeholder-ocean-200 font-bold focus:outline-none focus:bg-ocean-700 focus:border-white transition">
                 <button type="button" onclick="submitAnswer()" class="bg-ocean-600 hover:bg-ocean-500 text-white font-bold px-6 py-2 rounded-lg transition border border-white whitespace-nowrap shadow cursor-pointer">
@@ -181,7 +181,7 @@
     <footer class="border-t border-ocean-800 bg-ocean-950 py-4 px-4 text-center text-xs text-ocean-300 relative flex justify-center items-center">
         <p>© 雲端心電感應 Telepathy Game - 日式海洋風格版</p>
         
-        <!-- ⚙️ 隱藏房主開關（點擊後輸入暗號 8888 可開鎖成為房主） -->
+        <!-- ⚙️ 隱藏房主開關（點擊後輸入密碼 8888 解鎖成為房主） -->
         <button id="secretHostBtn" type="button" onclick="triggerSecretHost()" class="absolute right-4 text-ocean-400 hover:text-amber-300 transition cursor-pointer p-1 text-lg opacity-40 hover:opacity-100" title="房主解鎖">
             ⚙️
         </button>
@@ -224,9 +224,10 @@
 
     <!-- JavaScript 邏輯控制區 -->
     <script>
-        // 1. 設定區：請貼入您的 Google Apps Script 部署 URL
-        const GAS_API_URL = ""; // 例："https://script.google.com/macros/s/XXXXX/exec"[cite: 1]
-        const HOST_SECRET_CODE = "8888"; // 預設房主解鎖密碼
+        // 1. 設定區：請貼入您的 Google Apps Script 部署 Web App URL
+        const SHEET_NAME = 'TelepathyData';
+        const GAS_API_URL = ""; // 例："https://script.google.com/macros/s/XXXXX/exec"
+        const HOST_SECRET_CODE = "8888"; // 房主解鎖密碼
         
         // 全局狀態
         let currentRoom = "";
@@ -234,10 +235,10 @@
         let isHost = false;
         let pollingTimer = null;
 
-        // 本地模擬資料 (未設定 GAS 網址時啟用單機測試)
+        // 本地離線測試模擬資料 (當尚未填入 GAS_API_URL 時自動啟用)
         let localMockData = {
-            status: "playing",
-            question: "提到夏天最想吃什麼？",
+            status: "setup",
+            question: "",
             answers: {}
         };
 
@@ -273,6 +274,11 @@
 
         // 點擊右下角 ⚙️ 解鎖隱藏房主
         function triggerSecretHost() {
+            if (!currentRoom) {
+                alert("請先輸入暱稱與房號並「進入房間」，再點擊右下角齒輪解鎖房主功能！");
+                return;
+            }
+
             if (isHost) {
                 toggleHostModal();
                 return;
@@ -281,17 +287,13 @@
             const code = prompt("請輸入房主密碼以開啟管理控制台：");
             if (code === HOST_SECRET_CODE) {
                 isHost = true;
-                alert("恭喜！已成功驗證為房主。");
+                alert("驗證成功！您已成為本房間的隱藏房主。");
                 document.getElementById('hostBadge').classList.remove('hidden');
                 document.getElementById('hostQuickControl').classList.remove('hidden');
                 toggleHostModal();
             } else if (code !== null) {
                 alert("密碼錯誤！無法開啟房主權限。");
             }
-        }
-
-        function openHostModalDirectly() {
-            toggleHostModal();
         }
 
         // 離開房間
@@ -316,7 +318,7 @@
             if (pollingTimer) clearInterval(pollingTimer);
         }
 
-        // 取得狀態 (GET)[cite: 1]
+        // 取得房間最新狀態 (GET)
         async function fetchGameState() {
             if (!currentRoom) return;
 
@@ -334,7 +336,7 @@
             }
         }
 
-        // 渲染畫面
+        // 渲染遊戲畫面
         function renderGame(data) {
             const { status, question, answers } = data;
             
@@ -369,7 +371,7 @@
             });
         }
 
-        // 建立 3D 翻牌卡牌[cite: 1]
+        // 建立 3D 翻牌卡牌
         function createCardElement(playerName, answerText, isRevealed) {
             const cardWrapper = document.createElement('div');
             cardWrapper.className = 'w-full h-44 perspective-1000';
@@ -401,7 +403,7 @@
             return cardWrapper;
         }
 
-        // 玩家送出答案 (POST: submit_answer)[cite: 1]
+        // 玩家送出答案 (POST: submit_answer)
         async function submitAnswer() {
             const answer = document.getElementById('inputAnswer').value.trim();
             if (!answer) {
@@ -426,7 +428,7 @@
             modal.classList.toggle('hidden');
         }
 
-        // 房主功能: 出題 (POST: set_question)[cite: 1]
+        // 房主功能: 出題並開房 (POST: set_question)
         async function hostSetQuestion() {
             const q = document.getElementById('hostQuestionInput').value.trim();
             if (!q) {
@@ -448,7 +450,7 @@
             fetchGameState();
         }
 
-        // 房主功能: 開牌 (POST: reveal)[cite: 1]
+        // 房主功能: 開牌 (POST: reveal)
         async function hostReveal() {
             localMockData.status = 'revealed';
             await sendPostRequest({ action: 'reveal' });
@@ -458,7 +460,7 @@
             fetchGameState();
         }
 
-        // 房主功能: 重置 (POST: reset)[cite: 1]
+        // 房主功能: 重置 (POST: reset)
         async function hostReset() {
             if (!confirm('確定要重置目前房間嗎？')) return;
             
@@ -471,7 +473,7 @@
             fetchGameState();
         }
 
-        // 發送 POST 請求[cite: 1]
+        // 發送 POST 請求 (已移除自訂 headers 以避免瀏覽器 CORS 預檢阻擋)
         async function sendPostRequest(payload) {
             if (!GAS_API_URL) return;
 
@@ -479,11 +481,11 @@
                 payload.room = currentRoom;
                 await fetch(GAS_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
             } catch (error) {
                 console.error("發送請求失敗:", error);
+                alert("雲端同步失敗，請確認 GAS 部署網址與「所有人」存取權限是否正確！");
             }
         }
     </script>
