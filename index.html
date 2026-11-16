@@ -186,7 +186,7 @@
 
         .progress-fill {
             height: 8px;
-            width: 25%; /* 4/16 = 25% */
+            width: 31.25%; /* 5/16 = 31.25% */
             background: linear-gradient(90deg, var(--primary-teal), var(--accent-glow));
             border-radius: 8px;
             box-shadow: 0 0 10px var(--primary-cyan);
@@ -434,7 +434,7 @@
             <div class="progress-bar-container">
                 <div class="progress-fill"></div>
             </div>
-            <div class="progress-text">已解鎖關卡：4 / 16 (25.0%)</div>
+            <div class="progress-text">已解鎖關卡：5 / 16 (31.25%)</div>
         </header>
 
         <!-- 16 個關卡入口網格 -->
@@ -492,15 +492,16 @@
                 </div>
             </a>
 
-            <!-- LV.05 -->
-            <a href="javascript:void(0)" class="quest-card locked" onclick="triggerLockedEffect(this, 5)">
+            <!-- 關卡 5：已解鎖 -->
+            <a href="w5/index.html" class="quest-card unlocked">
                 <div class="card-header">
                     <span class="level-badge">LV.05</span>
-                    <span class="card-status-icon">🔒</span>
+                    <span class="card-status-icon">🔮</span>
                 </div>
-                <div class="card-title">Week 5 - 尚未解鎖...</div>
+                <div class="card-title">Week 5 - 心電感應遊戲開發</div>
                 <div class="card-footer">
-                    <span>尚未解鎖</span>
+                    <span>挑戰成功</span>
+                    <span>→</span>
                 </div>
             </a>
 
