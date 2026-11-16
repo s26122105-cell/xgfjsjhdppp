@@ -69,7 +69,7 @@
         }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col justify-between selection:bg-ocean-400 selection:text-ocean-900">
+<body class="text-white min-h-screen flex flex-col justify-between selection:bg-ocean-400 selection:text-ocean-900 pb-16">
 
     <!-- 頂部導覽列 / 標題區 -->
     <header class="border-b border-ocean-600 bg-ocean-900/90 backdrop-blur-md sticky top-0 z-40 shadow-lg">
@@ -80,7 +80,7 @@
             </div>
             
             <div id="roomInfoBadge" class="hidden flex items-center space-x-3 bg-ocean-800 px-3 py-1.5 rounded-lg border border-ocean-400 text-sm font-medium">
-                <span>房號: <strong id="displayRoomId" class="text-ocean-200 font-mono">---</strong></span>
+                <span>房號: <strong id="displayRoomId" class="text-amber-300 font-mono text-base">---</strong></span>
                 <span class="text-ocean-500">|</span>
                 <span>玩家: <strong id="displayName" class="text-ocean-200">---</strong></span>
                 <span id="hostBadge" class="hidden text-xs bg-amber-500 text-black px-2 py-0.5 rounded font-black">👑 房主</span>
@@ -92,11 +92,12 @@
     <!-- 主要內容區 -->
     <main class="max-w-5xl mx-auto px-4 py-8 flex-grow w-full">
         
-        <!-- 步驟 1: 登入/開房 介面 (高對比度清晰版) -->
+        <!-- 步驟 1: 登入/開房 介面 -->
         <div id="loginSection" class="max-w-md mx-auto bg-ocean-900 border-2 border-ocean-400 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-ocean-400/30 rounded-full blur-xl pointer-events-none"></div>
             
-            <h2 class="text-2xl font-black text-center mb-6 text-white tracking-wider drop-shadow-md">登入與房間設定</h2>
+            <h2 class="text-2xl font-black text-center mb-2 text-white tracking-wider drop-shadow-md">登入與房間分流</h2>
+            <p class="text-center text-xs text-ocean-200 mb-6">輸入相同的「房間號碼」，即可進入同一個遊戲房間</p>
             
             <div class="space-y-5">
                 <div>
@@ -105,7 +106,7 @@
                 </div>
                 
                 <div>
-                    <label class="block text-base font-bold text-ocean-100 mb-1.5">房間號碼 (可自訂或隨機)</label>
+                    <label class="block text-base font-bold text-ocean-100 mb-1.5">房間號碼 (房主指定或輸入同房號)</label>
                     <div class="flex gap-2">
                         <input type="text" id="inputRoom" placeholder="請輸入房號 (例: 888)" class="w-full bg-ocean-800 border-2 border-ocean-400 rounded-lg px-4 py-3 text-white placeholder-ocean-200 font-mono font-bold focus:outline-none focus:bg-ocean-700 focus:border-white focus:ring-2 focus:ring-white transition shadow-inner">
                         <button type="button" onclick="generateRandomRoom()" class="bg-ocean-700 hover:bg-ocean-600 text-white px-4 py-3 rounded-lg text-sm font-bold whitespace-nowrap transition border-2 border-ocean-400 shadow cursor-pointer">
@@ -121,21 +122,27 @@
         </div>
 
         <!-- 步驟 2: 遊戲主要畫面 (登入後顯示) -->
-        <div id="gameSection" class="hidden space-y-8">
+        <div id="gameSection" class="hidden space-y-6">
             
             <!-- 房主快捷管理條 (解鎖房主後顯示在頂部) -->
             <div id="hostQuickControl" class="hidden bg-amber-950/90 border-2 border-amber-500 rounded-xl p-4 shadow-xl">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center space-x-2">
                         <span class="text-xl">👑</span>
-                        <span class="font-black text-amber-200">房主快捷控制區</span>
+                        <div>
+                            <span class="font-black text-amber-200 block">房主控制面板 (房號: <span id="hostControlRoomLabel" class="font-mono underline"></span>)</span>
+                            <span class="text-xs text-amber-100/80">請通知同學輸入相同房號加入</span>
+                        </div>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="copyRoomInviteLink()" class="bg-ocean-700 hover:bg-ocean-600 text-white font-bold px-3 py-2 rounded-lg text-xs border border-ocean-300 cursor-pointer">
+                            🔗 複製邀請連結
+                        </button>
                         <button type="button" onclick="toggleHostModal()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-lg text-xs border border-amber-300 cursor-pointer">
-                            ⚙️ 控制台 (出題/重置)
+                            ⚙️ 出題 / 重置
                         </button>
                         <button type="button" onclick="hostReveal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 rounded-lg text-xs border border-white shadow cursor-pointer">
-                            🎴 全網頁開牌
+                            🎴 全網頁同步開牌
                         </button>
                     </div>
                 </div>
@@ -145,7 +152,7 @@
             <div class="bg-ocean-900/90 border-2 border-ocean-500 rounded-2xl p-6 text-center shadow-xl relative">
                 <div class="text-xs text-ocean-300 font-bold uppercase tracking-widest mb-1">Current Question</div>
                 <h2 id="questionDisplay" class="text-2xl md:text-3xl font-black text-white tracking-wide min-h-[40px] flex items-center justify-center drop-shadow-md">
-                    等待房主出題中...
+                    連線同步中...
                 </h2>
                 <div id="statusTag" class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold bg-ocean-800 text-ocean-100 border border-ocean-400">
                     等待中
@@ -163,8 +170,8 @@
             <!-- 卡牌翻牌展示區 (全網頁同步 3D 翻牌) -->
             <div>
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-white tracking-wider">玩家心電感應卡牌</h3>
-                    <span id="playerCount" class="text-sm font-bold text-white bg-ocean-800 px-3 py-1 rounded-full border border-ocean-400">已連線玩家: 0</span>
+                    <h3 class="text-lg font-bold text-white tracking-wider">同房玩家心電感應卡牌</h3>
+                    <span id="playerCount" class="text-sm font-bold text-white bg-ocean-800 px-3 py-1 rounded-full border border-ocean-400">已送出人數: 0</span>
                 </div>
 
                 <!-- 卡牌 Grid 容器 -->
@@ -177,17 +184,17 @@
 
     </main>
 
-    <!-- 底部資訊與隱藏房主開關 (隱藏於右下角) -->
-    <footer class="border-t border-ocean-800 bg-ocean-950 py-4 px-4 text-center text-xs text-ocean-300 relative flex justify-center items-center">
+    <!-- 底部資訊 -->
+    <footer class="border-t border-ocean-800 bg-ocean-950 py-4 px-4 text-center text-xs text-ocean-300">
         <p>© 雲端心電感應 Telepathy Game - 日式海洋風格版</p>
-        
-        <!-- ⚙️ 隱藏房主開關（點擊後輸入密碼 8888 解鎖成為房主） -->
-        <button id="secretHostBtn" type="button" onclick="triggerSecretHost()" class="absolute right-4 text-ocean-400 hover:text-amber-300 transition cursor-pointer p-1 text-lg opacity-40 hover:opacity-100" title="房主解鎖">
-            ⚙️
-        </button>
     </footer>
 
-    <!-- 房主控制台 Modal (隱藏控制面板) -->
+    <!-- ⚙️ 固定在視窗右下角、清晰可見的隱藏房主解鎖齒輪 -->
+    <button id="secretHostBtn" type="button" onclick="triggerSecretHost()" class="fixed right-5 bottom-5 z-50 bg-ocean-800 hover:bg-amber-600 text-white p-3.5 rounded-full shadow-2xl border-2 border-ocean-400 hover:border-white transition transform hover:scale-110 cursor-pointer text-xl" title="房主解鎖 (密碼: 8888)">
+        ⚙️
+    </button>
+
+    <!-- 房主控制台 Modal -->
     <div id="hostModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-ocean-900 border-2 border-amber-400 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
             <button type="button" onclick="toggleHostModal()" class="absolute top-4 right-4 text-ocean-200 hover:text-white text-xl font-bold cursor-pointer">✕</button>
@@ -198,8 +205,12 @@
             </div>
 
             <div class="space-y-4 text-sm">
+                <div class="bg-amber-950/60 border border-amber-500/50 rounded-lg p-3 text-amber-100 text-xs">
+                    目前管理房號：<strong id="modalRoomDisplay" class="font-mono text-base text-amber-300"></strong>（按下「出題」即會在雲端建立/更新此房間）
+                </div>
+
                 <div>
-                    <label class="block text-amber-200 mb-1 font-bold">設定新題目 (狀態將切換為：進行中)</label>
+                    <label class="block text-amber-200 mb-1 font-bold">設定新題目 (全網頁同步切換為進行中)</label>
                     <div class="flex gap-2">
                         <input type="text" id="hostQuestionInput" placeholder="例如：提到夏天會想到什麼？" class="flex-grow bg-ocean-800 border-2 border-amber-400 rounded-lg px-3 py-2 text-white placeholder-amber-200 font-bold focus:outline-none focus:border-white">
                         <button type="button" onclick="hostSetQuestion()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-lg transition border border-white cursor-pointer">
@@ -224,9 +235,11 @@
 
     <!-- JavaScript 邏輯控制區 -->
     <script>
+        // ==========================================
         // 1. 設定區：請貼入您的 Google Apps Script 部署 Web App URL
+        // ==========================================
         const SHEET_NAME = 'TelepathyData';
-        const GAS_API_URL = ""; // 例："https://script.google.com/macros/s/XXXXX/exec"
+        const GAS_API_URL = ""; // ★ 請務必在此雙引號內貼入您的 GAS 網址，所有人才會連到同一個房間！
         const HOST_SECRET_CODE = "8888"; // 房主解鎖密碼
         
         // 全局狀態
@@ -235,12 +248,14 @@
         let isHost = false;
         let pollingTimer = null;
 
-        // 本地離線測試模擬資料 (當尚未填入 GAS_API_URL 時自動啟用)
-        let localMockData = {
-            status: "setup",
-            question: "",
-            answers: {}
-        };
+        // 網頁載入時，自動檢查網址是否有 ?room=XXX 參數（方便同學點邀請連結直接帶入房號）
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomFromUrl = urlParams.get('room');
+            if (roomFromUrl) {
+                document.getElementById('inputRoom').value = roomFromUrl;
+            }
+        });
 
         // 隨機生成 3 位數房號
         function generateRandomRoom() {
@@ -248,26 +263,34 @@
             document.getElementById('inputRoom').value = randomCode;
         }
 
-        // 登入進入遊戲
+        // 登入進入房間（統一以輸入的房號為準）
         function joinGame() {
             const name = document.getElementById('inputName').value.trim();
             const room = document.getElementById('inputRoom').value.trim();
 
             if (!name || !room) {
-                alert('請填寫暱稱與房號！');
+                alert('請填寫您的暱稱與房間號碼！');
                 return;
+            }
+
+            if (!GAS_API_URL) {
+                alert('⚠️ 提醒：尚未設定 GAS_API_URL！\n請先在程式碼第 192 行填入 Google Apps Script 部署網址，不同裝置的同學才能連進同一個房間。');
             }
 
             currentName = name;
             currentRoom = room;
 
+            // 更新畫面顯示的房號與玩家名
             document.getElementById('displayName').innerText = currentName;
             document.getElementById('displayRoomId').innerText = currentRoom;
+            document.getElementById('hostControlRoomLabel').innerText = currentRoom;
+            document.getElementById('modalRoomDisplay').innerText = currentRoom;
             
             document.getElementById('roomInfoBadge').classList.remove('hidden');
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('gameSection').classList.remove('hidden');
 
+            // 立即向雲端抓取該房號的資料，並啟動每 3 秒輪詢
             fetchGameState();
             startPolling();
         }
@@ -275,7 +298,7 @@
         // 點擊右下角 ⚙️ 解鎖隱藏房主
         function triggerSecretHost() {
             if (!currentRoom) {
-                alert("請先輸入暱稱與房號並「進入房間」，再點擊右下角齒輪解鎖房主功能！");
+                alert("請先輸入暱稱與您指定的「房間號碼」，點擊「進入房間」後，再按右下角齒輪解鎖房主功能！");
                 return;
             }
 
@@ -284,16 +307,27 @@
                 return;
             }
 
-            const code = prompt("請輸入房主密碼以開啟管理控制台：");
+            const code = prompt(`請輸入房主密碼以管理【房號: ${currentRoom}】：`);
             if (code === HOST_SECRET_CODE) {
                 isHost = true;
-                alert("驗證成功！您已成為本房間的隱藏房主。");
+                alert(`驗證成功！您現在是【房號: ${currentRoom}】的房主。\n請在面板中設定題目並按「出題」即可正式開房！`);
                 document.getElementById('hostBadge').classList.remove('hidden');
                 document.getElementById('hostQuickControl').classList.remove('hidden');
                 toggleHostModal();
             } else if (code !== null) {
                 alert("密碼錯誤！無法開啟房主權限。");
             }
+        }
+
+        // 一鍵複製帶房號的邀請連結給同學
+        function copyRoomInviteLink() {
+            const baseUrl = window.location.href.split('?')[0];
+            const inviteUrl = `${baseUrl}?room=${encodeURIComponent(currentRoom)}`;
+            navigator.clipboard.writeText(inviteUrl).then(() => {
+                alert(`已複製邀請連結！\n房號：${currentRoom}\n連結：${inviteUrl}\n\n同學點開連結就會自動帶入房號 ${currentRoom}！`);
+            }).catch(() => {
+                prompt("請手動複製以下邀請連結給同學：", inviteUrl);
+            });
         }
 
         // 離開房間
@@ -318,21 +352,16 @@
             if (pollingTimer) clearInterval(pollingTimer);
         }
 
-        // 取得房間最新狀態 (GET)
+        // 取得雲端指定房號的最新狀態 (GET ?room=xxx)
         async function fetchGameState() {
-            if (!currentRoom) return;
-
-            if (!GAS_API_URL) {
-                renderGame(localMockData);
-                return;
-            }
+            if (!currentRoom || !GAS_API_URL) return;
 
             try {
                 const response = await fetch(`${GAS_API_URL}?room=${encodeURIComponent(currentRoom)}`);
                 const data = await response.json();
                 renderGame(data);
             } catch (error) {
-                console.error("抓取狀態失敗:", error);
+                console.error("抓取雲端房間狀態失敗:", error);
             }
         }
 
@@ -346,18 +375,18 @@
             qDisplay.innerText = question || "等待房主出題中...";
             
             if (status === 'setup') {
-                statusTag.innerText = "準備中 (Setup)";
+                statusTag.innerText = "準備中 (Setup) - 等待房主出題";
                 statusTag.className = "inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold bg-amber-800 text-amber-100 border border-amber-400";
             } else if (status === 'playing') {
-                statusTag.innerText = "玩家作答中 (Playing)";
+                statusTag.innerText = "作答中 (Playing) - 請輸入您的答案";
                 statusTag.className = "inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold bg-ocean-700 text-white border border-ocean-400";
             } else if (status === 'revealed') {
-                statusTag.innerText = "已開牌 (Revealed)";
+                statusTag.innerText = "已開牌 (Revealed) - 揭曉心電感應結果！";
                 statusTag.className = "inline-block mt-3 px-3 py-1 rounded-full text-xs font-bold bg-emerald-800 text-emerald-100 border border-emerald-400";
             }
 
             const playerNames = Object.keys(answers || {});
-            document.getElementById('playerCount').innerText = `已連線玩家: ${playerNames.length}`;
+            document.getElementById('playerCount').innerText = `已送出人數: ${playerNames.length}`;
 
             const cardsGrid = document.getElementById('cardsGrid');
             cardsGrid.innerHTML = '';
@@ -411,8 +440,6 @@
                 return;
             }
 
-            localMockData.answers[currentName] = answer;
-
             await sendPostRequest({
                 action: 'submit_answer',
                 playerName: currentName,
@@ -436,10 +463,6 @@
                 return;
             }
 
-            localMockData.question = q;
-            localMockData.status = 'playing';
-            localMockData.answers = {};
-
             await sendPostRequest({
                 action: 'set_question',
                 question: q
@@ -452,7 +475,6 @@
 
         // 房主功能: 開牌 (POST: reveal)
         async function hostReveal() {
-            localMockData.status = 'revealed';
             await sendPostRequest({ action: 'reveal' });
             if (!document.getElementById('hostModal').classList.contains('hidden')) {
                 toggleHostModal();
@@ -462,20 +484,19 @@
 
         // 房主功能: 重置 (POST: reset)
         async function hostReset() {
-            if (!confirm('確定要重置目前房間嗎？')) return;
+            if (!confirm(`確定要重置【房號: ${currentRoom}】的題目與所有答案嗎？`)) return;
             
-            localMockData.status = 'setup';
-            localMockData.question = '';
-            localMockData.answers = {};
-
             await sendPostRequest({ action: 'reset' });
             toggleHostModal();
             fetchGameState();
         }
 
-        // 發送 POST 請求 (已移除自訂 headers 以避免瀏覽器 CORS 預檢阻擋)
+        // 發送 POST 請求至 GAS（指定 currentRoom 確保所有人寫入同一列）
         async function sendPostRequest(payload) {
-            if (!GAS_API_URL) return;
+            if (!GAS_API_URL) {
+                alert('尚未設定 GAS_API_URL，請先於程式碼填入網址！');
+                return;
+            }
 
             try {
                 payload.room = currentRoom;
@@ -485,7 +506,7 @@
                 });
             } catch (error) {
                 console.error("發送請求失敗:", error);
-                alert("雲端同步失敗，請確認 GAS 部署網址與「所有人」存取權限是否正確！");
+                alert("雲端同步失敗，請確認 GAS 部署網址與「所有人」存取權限！");
             }
         }
     </script>
